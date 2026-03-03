@@ -32,12 +32,12 @@ async function runCrawlerBackground() {
     isCrawling = true;
 
     const startTime = Date.now();
-    await addCrawlerLog('🚀 Bắt đầu cào tin tức tự động...', 'info');
-
     let totalNew = 0;
     let totalSkipped = 0;
 
     try {
+        await addCrawlerLog('🚀 Bắt đầu cào tin tức tự động...', 'info');
+
         for (const targetCategory of CATEGORIES) {
             await addCrawlerLog(`📂 Danh mục: ${targetCategory.name}`, 'info');
 
@@ -49,7 +49,7 @@ async function runCrawlerBackground() {
                 continue;
             }
 
-            await addCrawlerLog(`   Tìm thấy ${articles.length} bài. Chỉ lấy tối đa 2 bài mới trong ngày.`, 'info');
+            await addCrawlerLog(`   Tìm thấy ${articles.length} bài.`, 'info');
 
             let countThisCategory = 0;
 
@@ -60,7 +60,7 @@ async function runCrawlerBackground() {
                 // Today-only filter
                 if (!isTodayArticle(article)) {
                     totalSkipped++;
-                    await addCrawlerLog(`   ⏩ Bỏ qua (không phải hôm nay): ${article.title?.substring(0, 50)}`, 'info');
+                    // Optional: noisy log, simplified
                     continue;
                 }
 
@@ -70,7 +70,7 @@ async function runCrawlerBackground() {
                     const result = await processSingleArticle(article);
                     if (result && (result as any).duplicate) {
                         await addCrawlerLog(`   ↩️  Bài đã tồn tại — dừng danh mục này.`, 'info');
-                        break; // Oldest article this category already existed, no need to go deeper
+                        break;
                     } else if (result) {
                         countThisCategory++;
                         totalNew++;
@@ -98,11 +98,15 @@ async function runCrawlerBackground() {
         } catch { /* non-critical */ }
 
     } catch (error: any) {
-        await addCrawlerLog(`🚨 Lỗi hệ thống: ${error.message}`, 'error');
+        console.error('Crawler System Error:', error);
+        try {
+            await addCrawlerLog(`🚨 Lỗi hệ thống: ${error.message}`, 'error');
+        } catch { /* double failure */ }
     } finally {
         isCrawling = false;
     }
 }
+
 
 export async function POST() {
     if (isCrawling) {

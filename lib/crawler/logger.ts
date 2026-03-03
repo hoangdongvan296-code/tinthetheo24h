@@ -1,17 +1,22 @@
 import { getDb } from '../mongodb';
 
 export async function addCrawlerLog(message: string, type: 'info' | 'warn' | 'error' = 'info') {
-    const db = await getDb();
-    const collection = db.collection('crawler_logs');
+    try {
+        const db = await getDb();
+        const collection = db.collection('crawler_logs');
 
-    await collection.insertOne({
-        message,
-        type,
-        createdAt: new Date(),
-    });
+        await collection.insertOne({
+            message,
+            type,
+            createdAt: new Date(),
+        });
+    } catch (err) {
+        console.error(`[DB LOG ERROR] Could not save log to MongoDB:`, err);
+    }
 
     console.log(`[CRAWLER LOG] ${type.toUpperCase()}: ${message}`);
 }
+
 
 export async function getCrawlerLogs(limit = 50) {
     const db = await getDb();

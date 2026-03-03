@@ -9,9 +9,9 @@ async function runVideoCrawlerBackground() {
     isVideoCrawling = true;
 
     const startTime = Date.now();
-    await addCrawlerLog('🎬 Bắt đầu cào video mới trong ngày...', 'info');
 
     try {
+        await addCrawlerLog('🎬 Bắt đầu cào video mới trong ngày...', 'info');
         const videos = await fetchTodayVideos();
         const elapsed = Math.round((Date.now() - startTime) / 1000);
         await addCrawlerLog(
@@ -19,11 +19,15 @@ async function runVideoCrawlerBackground() {
             'info'
         );
     } catch (error: any) {
-        await addCrawlerLog(`🚨 Lỗi crawl video: ${error.message}`, 'error');
+        console.error('Video Crawler Error:', error);
+        try {
+            await addCrawlerLog(`🚨 Lỗi crawl video: ${error.message}`, 'error');
+        } catch { /* ignore */ }
     } finally {
         isVideoCrawling = false;
     }
 }
+
 
 export async function POST() {
     if (isVideoCrawling) {
