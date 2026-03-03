@@ -1,0 +1,46 @@
+{
+    "name": "Tin Thể Thao 24h",
+    "short_name": "TinTheThao",
+    "description": "Cập nhật tin tức bóng đá, thể thao mới nhất 24/7.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#FFD700",
+    "orientation": "portrait-primary",
+    "lang": "vi",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "news",
+        "sports"
+    ],
+    "shortcuts": [
+        {
+            "name": "Ngoại Hạng Anh",
+            "url": "/ngoai-hang-anh",
+            "description": "Tin tức Ngoại hạng Anh mới nhất"
+        },
+        {
+            "name": "Champions League",
+            "url": "/champions-league",
+            "description": "Tin tức Champions League"
+        },
+        {
+            "name": "Chuyển Nhượng",
+            "url": "/chuyen-nhuong",
+            "description": "Tin chuyển nhượng mới nhất"
+        }
+    ]
+}

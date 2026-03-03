@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+build/
+
+# Environment variables — NEVER commit
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Temp dev scripts
+tmp/
+
+# TypeScript cache
+*.tsbuildinfo

@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+
+# Block admin & API routes from indexing
+Disallow: /admin/
+Disallow: /api/
+
+# Block search results (dynamic, not indexable)
+Disallow: /search
+Disallow: /search?*
+
+# Block pagination URL patterns (prefer canonical first page)
+Disallow: /*?page=*
+
+# Block filter/query string URLs that duplicate content
+Disallow: /*?q=*
+Disallow: /*?category=*
+Disallow: /*?tag=*
+Disallow: /*?ref=*
+Disallow: /*?utm_*
+
+# Block internal utility pages
+Disallow: /not-found
+Disallow: /_next/
+Disallow: /favicon*
+
+# Crawl delay for politeness
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://tinthethao24h.com/sitemap.xml
+Sitemap: https://tinthethao24h.com/sitemap-news.xml
+Sitemap: https://tinthethao24h.com/rss.xml
