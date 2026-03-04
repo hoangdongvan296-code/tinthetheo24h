@@ -18,12 +18,22 @@
 
 'use strict';
 
+// Load .env.local — bắt buộc để lấy ADMIN_PASSWORD chính xác trên VPS
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+
 const cron = require('node-cron');
 
 // ── Config ────────────────────────────────────────────────────────────────
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const USER = process.env.ADMIN_USERNAME || 'admin';
-const PASS = process.env.ADMIN_PASSWORD || 'bongda2026';
+const PASS = process.env.ADMIN_PASSWORD;
+
+if (!PASS) {
+    console.error('[CRON] ❌ Lỗi: Không tìm thấy ADMIN_PASSWORD trong .env.local!');
+    process.exit(1);
+}
+
 const AUTH_B64 = Buffer.from(`${USER}:${PASS}`).toString('base64');
 
 const HEADERS = {
