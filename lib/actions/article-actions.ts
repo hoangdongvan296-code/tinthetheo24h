@@ -96,6 +96,10 @@ export async function deleteArticle(id: string) {
         const { ObjectId } = require('mongodb');
         const db = await getDb();
         await db.collection('articles').deleteOne({ _id: new ObjectId(id) });
+
+        const { revalidatePath } = require('next/cache');
+        revalidatePath('/admin/posts');
+
         return { success: true };
     } catch (error) {
         console.error('Error deleting article:', error);
