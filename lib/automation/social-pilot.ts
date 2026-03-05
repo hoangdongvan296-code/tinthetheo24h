@@ -21,8 +21,13 @@ export async function postToTelegram(options: TelegramPostOptions): Promise<bool
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
 
-    if (!botToken || !chatId) {
-        console.log('[Telegram] Skipping: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set.');
+    // Token hợp lệ phải có dạng "123456789:ABC-DEF..." (chứa dấu ':')
+    // Bỏ qua nếu chưa cấu hình hoặc vẫn là placeholder
+    const isValidToken = botToken && botToken.includes(':') && botToken.length > 20;
+    const isValidChat = chatId && !chatId.includes('your_channel') && chatId !== '';
+
+    if (!isValidToken || !isValidChat) {
+        // Silent skip — không log spam khi Telegram chưa được cấu hình
         return false;
     }
 
