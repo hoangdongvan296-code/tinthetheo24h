@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { addCrawlerLog } from '@/lib/crawler/logger';
+import { addCrawlerLog, getCrawlerLogs } from '@/lib/crawler/logger';
 import { scrapeCategory } from '@/lib/crawler/scraper';
 import { CATEGORIES } from '@/lib/crawler/categories';
 import { processSingleArticle } from '@/lib/ai/pipeline';
@@ -126,5 +126,10 @@ export async function POST() {
 }
 
 export async function GET() {
-    return NextResponse.json({ isCrawling });
+    try {
+        const logs = await getCrawlerLogs(20);
+        return NextResponse.json({ isCrawling, logs });
+    } catch {
+        return NextResponse.json({ isCrawling, logs: [] });
+    }
 }

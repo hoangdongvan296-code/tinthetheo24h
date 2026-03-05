@@ -18,20 +18,14 @@ export default function AdminCrawler() {
 
     const fetchStatusAndLogs = async () => {
         try {
-            const [statusRes, logsRes] = await Promise.all([
-                fetch('/api/admin/crawler/start', { cache: 'no-store' }),
-                fetch('/api/admin/crawler/logs', { cache: 'no-store' })
-            ]);
+            const res = await fetch('/api/admin/crawler/start', { cache: 'no-store' });
 
-            if (statusRes.ok) {
-                const statusData = await statusRes.json();
-                setIsCrawling(statusData.isCrawling);
-            }
+            if (res.ok) {
+                const data = await res.json();
+                setIsCrawling(data.isCrawling ?? false);
 
-            if (logsRes.ok) {
-                const logsData = await logsRes.json();
-                if (logsData.logs && logsData.logs.length > 0) {
-                    setLogs(logsData.logs.map((L: any) => ({
+                if (data.logs && data.logs.length > 0) {
+                    setLogs(data.logs.map((L: any) => ({
                         time: new Date(L.createdAt).toLocaleTimeString('vi-VN'),
                         message: L.message,
                         type: L.type
