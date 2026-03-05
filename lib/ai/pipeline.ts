@@ -6,6 +6,7 @@ import { pushToSocial } from '../automation/social-pilot';
 import { getNextAuthorForArticle } from '../actions/author-actions';
 import { getCategorySlug } from '../helpers';
 import { getDb } from '../mongodb';
+import { revalidatePath } from 'next/cache';
 
 import { slugify } from '../helpers';
 
@@ -138,6 +139,10 @@ export async function processSingleArticle(scraped: any): Promise<FullArticle | 
             plainText,
             { category: finalArticle.category, imageUrl: finalArticle.imageUrl }
         );
+
+        // Revalidate public pages for the new article
+        revalidatePath('/');
+        revalidatePath(`/${getCategorySlug(finalArticle.category)}`);
     }
 
     return finalArticle;

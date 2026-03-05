@@ -3,6 +3,7 @@
 import { getDb } from '../mongodb';
 import { notifyGoogleIndexing } from './indexing-actions';
 import { getCategorySlug } from '../helpers';
+import { revalidatePath } from 'next/cache';
 
 
 export async function getArticles(status?: string, category?: string, page: number = 1, limit: number = 1000) {
@@ -80,8 +81,16 @@ export async function updateArticle(id: string, data: any) {
             if (article && article.slug && article.category) {
                 const url = `https://tinthethao24h.com/${getCategorySlug(article.category)}/${article.slug}`;
                 await notifyGoogleIndexing(url);
+
+                // Revalidate public pages
+                revalidatePath('/');
+                revalidatePath(`/${getCategorySlug(article.category)}`);
+                revalidatePath(`/${getCategorySlug(article.category)}/${article.slug}`);
             }
         }
+
+        // Always revalidate admin list to show changes
+        revalidatePath('/admin/posts');
 
         return { success: true };
 
