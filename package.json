@@ -12,6 +12,7 @@
   "dependencies": {
     "cheerio": "latest",
     "dotenv": "latest",
+    "fast-xml-parser": "^5.4.2",
     "googleapis": "^171.4.0",
     "lucide-react": "latest",
     "mongodb": "latest",
