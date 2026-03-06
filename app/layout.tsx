@@ -5,6 +5,8 @@ import { getSettings } from '../lib/actions/settings-actions';
 
 const SITE_URL = 'https://tinthethao24h.com';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
     title: {

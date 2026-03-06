@@ -9,6 +9,8 @@ import { scrapeSchedules } from '../lib/crawler/score-scraper';
 import Link from 'next/link';
 import { getCategorySlug } from '../lib/helpers';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
     const publishedArticles = await getArticles('published');
     const matches = await scrapeSchedules();
