@@ -12,6 +12,7 @@ interface LogEntry {
 
 export default function AdminCrawler() {
     const [isCrawling, setIsCrawling] = useState(false);
+    const [isVideoCrawling, setIsVideoCrawling] = useState(false);
     const [logs, setLogs] = useState<LogEntry[]>([
         { time: new Date().toLocaleTimeString('vi-VN'), message: 'Bảng điều khiển kết nối máy chủ...', type: 'info' }
     ]);
@@ -19,6 +20,7 @@ export default function AdminCrawler() {
     const fetchStatusAndLogs = async () => {
         try {
             const res = await fetch('/api/admin/crawler/start', { cache: 'no-store' });
+            const videoRes = await fetch('/api/admin/crawler/videos', { cache: 'no-store' });
 
             if (res.ok) {
                 const data = await res.json();
@@ -33,6 +35,11 @@ export default function AdminCrawler() {
                 } else {
                     setLogs([{ time: new Date().toLocaleTimeString('vi-VN'), message: 'Chưa có dữ liệu log lịch sử.', type: 'info' }]);
                 }
+            }
+
+            if (videoRes.ok) {
+                const videoData = await videoRes.json();
+                setIsVideoCrawling(videoData.isVideoCrawling ?? false);
             }
         } catch (error) {
             console.error("Failed to fetch crawler data", error);
@@ -58,18 +65,41 @@ export default function AdminCrawler() {
         }
     };
 
+    const startVideoCrawl = async () => {
+        setIsVideoCrawling(true);
+        try {
+            await fetch('/api/admin/crawler/videos', {
+                method: 'POST'
+            });
+            // Logs will update via the polling interval
+        } catch (error) {
+            console.error(error);
+            setIsVideoCrawling(false);
+        }
+    };
+
     return (
         <div>
             <div className="admin-header">
                 <h1>Bảng điều khiển Crawler</h1>
-                <button
-                    className="btn-primary"
-                    onClick={startCrawl}
-                    disabled={isCrawling}
-                    style={{ background: isCrawling ? '#888' : '#2271b1' }}
-                >
-                    {isCrawling ? 'Đang chạy cào dữ liệu...' : 'Bắt đầu cào tin mới'}
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button
+                        className="btn-primary"
+                        onClick={startCrawl}
+                        disabled={isCrawling}
+                        style={{ background: isCrawling ? '#888' : '#2271b1' }}
+                    >
+                        {isCrawling ? 'Đang chạy cào tin...' : 'Bắt đầu cào tin mới'}
+                    </button>
+                    <button
+                        className="btn-primary"
+                        onClick={startVideoCrawl}
+                        disabled={isVideoCrawling}
+                        style={{ background: isVideoCrawling ? '#888' : '#e63946' }}
+                    >
+                        {isVideoCrawling ? 'Đang chạy cào video...' : 'Bắt đầu cào Video'}
+                    </button>
+                </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
@@ -85,7 +115,7 @@ export default function AdminCrawler() {
                     <div style={{ fontSize: '0.85rem' }}>
                         <div><strong>Nguồn tin:</strong> Tribal Football, thethao247</div>
                         <div><strong>Model AI:</strong> Google Gemini 2.0 Flash / OpenRouter</div>
-                        <div><strong>Tự động hóa:</strong> Chờ cấu hình Cron (hoạt động ngầm)</div>
+                        <div><strong>Tự động hóa (Cron):</strong> Đã cấu hình (chạy nền qua PM2)</div>
                     </div>
                 </div>
 
