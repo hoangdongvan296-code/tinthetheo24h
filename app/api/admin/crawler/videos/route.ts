@@ -12,7 +12,9 @@ async function runVideoCrawlerBackground() {
 
     try {
         await addCrawlerLog('🎬 Bắt đầu cào video mới trong ngày...', 'info');
+        console.log("-> fetchTodayVideos() called from API Route...");
         const videos = await fetchTodayVideos();
+        console.log("-> fetchTodayVideos() returned length in API Route:", videos.length);
         const elapsed = Math.round((Date.now() - startTime) / 1000);
         await addCrawlerLog(
             `🏁 Cào video hoàn tất! ${videos.length} video hôm nay đã lưu. (${elapsed}s)`,

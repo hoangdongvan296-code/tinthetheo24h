@@ -21,21 +21,23 @@ const CHANNEL_MAP: Record<string, string> = {
 const TARGET_CHANNELS = Object.keys(CHANNEL_MAP);
 
 /**
- * Check if the Date object is from "today" or "yesterday".
- * This replaces the text-based matching which breaks across languages.
+ * Check if the Date object is from recent time.
  */
 function isRecentVideo(publishDateStr: string): boolean {
     if (!publishDateStr) return false;
 
-    const publishDate = new Date(publishDateStr);
-    const now = new Date();
+    // publishDateStr is an ISO string like "2026-03-05T12:00:00+00:00"
+    const publishTime = new Date(publishDateStr).getTime();
+    if (isNaN(publishTime)) return false;
 
-    // Calculate difference in hours
-    const diffTime = Math.abs(now.getTime() - publishDate.getTime());
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+    const nowTime = Date.now();
 
-    // Accept videos published within the last 48 hours
-    return diffHours <= 48;
+    // Calculate difference in hours using absolute milliseconds
+    const diffHours = (nowTime - publishTime) / (1000 * 60 * 60);
+
+    // Accept videos published within the last 48 hours. 
+    // Margin of -24 handles VPS timezone forward skews.
+    return diffHours <= 48 && diffHours >= -24;
 }
 
 export async function scrapeChannelVideos(handle: string): Promise<YouTubeVideo[]> {
@@ -52,8 +54,12 @@ export async function scrapeChannelVideos(handle: string): Promise<YouTubeVideo[
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': 'application/rss+xml, application/xml, text/xml',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
             },
             cache: 'no-store',
+            next: { revalidate: 0 } // FORCE Next.js App Router to never cache this fetch
         });
 
         const xmlData = await res.text();
