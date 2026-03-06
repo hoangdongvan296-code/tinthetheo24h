@@ -79,7 +79,15 @@ export async function scrapeChannelVideos(handle: string): Promise<YouTubeVideo[
         // Handle both single object and array of objects
         const items = Array.isArray(entries) ? entries : [entries];
 
-        return items.slice(0, 10).map((item: any) => {
+        // Filter out non-sports content that some channels (like FPT) might occasionally post
+        const excludeKeywords = ['ultraman', 'siêu nhân', 'game show', 'quảng cáo', 'trò chơi', 'game', 'livestream', 'phim', 'tập'];
+
+        const filteredItems = items.filter((item: any) => {
+            const titleLower = (item.title || '').toLowerCase();
+            return !excludeKeywords.some(keyword => titleLower.includes(keyword));
+        });
+
+        return filteredItems.slice(0, 10).map((item: any) => {
             return {
                 id: item['yt:videoId'],
                 title: item.title,
