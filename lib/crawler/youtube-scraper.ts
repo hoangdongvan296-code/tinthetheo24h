@@ -21,8 +21,8 @@ const TARGET_CHANNELS = [
  * YouTube shows relative times in English regardless of user locale when scraped server-side.
  */
 const TODAY_KEYWORDS = [
-    'second', 'minute', 'hour',               // English: "2 hours ago", "30 minutes ago"
-    'giây', 'phút', 'giờ',                   // Vietnamese (fallback)
+    'second', 'minute', 'hour', 'day',        // English
+    'giây', 'phút', 'giờ', 'ngày',           // Vietnamese (fallback)
     'Streamed live',                          // Live within last 24h
 ];
 
